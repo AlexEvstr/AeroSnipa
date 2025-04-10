@@ -5,6 +5,7 @@ public class GameWindowManager : MonoBehaviour
 {
     public float animationDuration = 0.5f;
     [SerializeField] private GameObject _gameOverWindow;
+    [SerializeField] private GameObject _missionWindow;
     private GameAudioCotroller _gameAudioCotroller;
 
     private void Start()
@@ -14,11 +15,22 @@ public class GameWindowManager : MonoBehaviour
 
     public void OpenGameOver()
     {
-        StartCoroutine(ExpandWindow());
+        StartCoroutine(ExpandWindow(_gameOverWindow));
         _gameAudioCotroller.PlayGameOverSound();
     }
 
-    private IEnumerator ExpandWindow(float duration = 0.5f)
+    public void OpenMissionWindow()
+    {
+        StartCoroutine(ExpandWindow(_missionWindow));
+    }
+
+    public void CloseMissionWindow()
+    {
+        StartCoroutine(CollapseWindow(_missionWindow));
+    }
+
+
+    private IEnumerator ExpandWindow(GameObject window, float duration = 0.5f)
     {
         yield return new WaitForSeconds(0.5f);
         Vector3 startScale = Vector3.zero;
@@ -29,10 +41,29 @@ public class GameWindowManager : MonoBehaviour
         {
             timer += Time.deltaTime;
             float progress = timer / duration;
-            _gameOverWindow.transform.localScale = Vector3.Lerp(startScale, endScale, progress);
+            window.transform.localScale = Vector3.Lerp(startScale, endScale, progress);
             yield return null;
         }
 
-        _gameOverWindow.transform.localScale = endScale;
+        window.transform.localScale = endScale;
     }
+
+    private IEnumerator CollapseWindow(GameObject window, float duration = 0.5f)
+    {
+        Vector3 startScale = Vector3.one;
+        Vector3 endScale = Vector3.zero;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float progress = timer / duration;
+            window.transform.localScale = Vector3.Lerp(startScale, endScale, progress);
+            yield return null;
+        }
+
+        window.transform.localScale = endScale;
+        window.SetActive(false); // Опционально скрываем объект после анимации
+    }
+
 }

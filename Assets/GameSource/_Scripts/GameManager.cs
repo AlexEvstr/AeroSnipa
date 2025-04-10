@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     private int lives = 3;
     [SerializeField] private Text _coinsToAdd;
     [SerializeField] private GameObject _coinImage;
+    private MissionManager _missionManager;
     private int _totalHitsCount;
     private int _totalGamesCount;
 
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        _missionManager = GetComponent<MissionManager>();
         _totalHitsCount = PlayerPrefs.GetInt("TotalHits", 0);
         _totalGamesCount = PlayerPrefs.GetInt("TotalGames", 0);
         _gameWindowManager = GetComponent<GameWindowManager>();
@@ -37,6 +39,19 @@ public class GameManager : MonoBehaviour
 
         totalCoins += coinsToAdd;
         roundCoins += coinsToAdd;
+
+        PlayerPrefs.SetInt("TotalCoins", totalCoins);
+
+        UpdateCoinUI();
+    }
+
+    public void AddCoinsForMission(int coinsAmount)
+    {
+        IncreaseAndHits();
+        StartCoroutine(ShowCoinsText(coinsAmount));
+
+        totalCoins += coinsAmount;
+        roundCoins += coinsAmount;
 
         PlayerPrefs.SetInt("TotalCoins", totalCoins);
 
@@ -88,6 +103,9 @@ public class GameManager : MonoBehaviour
             lifeIcons[lives].SetActive(false);
         }
 
+        if (PlayerPrefs.GetInt("ModeIndex", 0) == 1)
+            _missionManager.CheckLifes();
+
         if (lives == 0)
         {
             _gameWindowManager.OpenGameOver();
@@ -128,5 +146,10 @@ public class GameManager : MonoBehaviour
         {
             icon.SetActive(true);
         }
+    }
+
+    public int GetCurrentLives()
+    {
+        return lives;
     }
 }

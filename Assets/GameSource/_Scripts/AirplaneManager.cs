@@ -12,6 +12,7 @@ public class AirplaneManager : MonoBehaviour
     private float leftBoundary;
     private float rightBoundary;
     [SerializeField] private Sprite[] _planeSprites;
+    [SerializeField] private GameObject _shotBtn;
 
     private void Start()
     {
@@ -68,6 +69,7 @@ public class AirplaneManager : MonoBehaviour
     public void SwitchToVerticalMovement()
     {
         moveHorizontally = false;
+        _shotBtn.SetActive(false);
     }
 
     public void OnAirplaneCollision(string tag)
@@ -79,6 +81,7 @@ public class AirplaneManager : MonoBehaviour
             moveHorizontally = true;
 
             targetX = rightBoundary;
+            _shotBtn.SetActive(true);
         }
     }
 }

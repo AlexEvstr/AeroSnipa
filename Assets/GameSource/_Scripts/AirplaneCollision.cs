@@ -7,6 +7,7 @@ public class AirplaneCollision : MonoBehaviour
     public GameManager gameManager;
     public GameObject _failText;
     [SerializeField] private GameAudioCotroller _gameAudioCotroller;
+    [SerializeField] private MissionManager _missionManager;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -15,6 +16,8 @@ public class AirplaneCollision : MonoBehaviour
             airplaneManager.OnAirplaneCollision(collision.tag);
             gameManager.AddCoins();
             _gameAudioCotroller.PlayCashSound();
+
+            _missionManager.RegisterHit();
         }
         else if (collision.CompareTag("border"))
         {
